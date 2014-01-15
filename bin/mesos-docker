@@ -244,7 +244,7 @@ def run_with_settings(image, args=[], env={}, ports=[],
 
 @ensure_image
 def inner_ports(image):
-    text   = subprocess.check_output(['docker', 'inspect', image])
+    text   = subprocess.Popen(['docker', 'inspect', image], stdout=subprocess.PIPE).communicate()[0]
     parsed = json.loads(text)[0]
     config = None
     if 'Config' in parsed:
@@ -277,7 +277,7 @@ def image_info(image):
 images = {}
 def refresh_docker_image_info(image):
     delim   = re.compile('  +')
-    text    = subprocess.check_output(['docker', 'images', image])
+    text    = subprocess.Popen(['docker', 'images', image], stdout=subprocess.PIPE).communicate()[0]
     records = [ delim.split(line) for line in text.splitlines() ]
     for record in records:
         if record[0] == image:
